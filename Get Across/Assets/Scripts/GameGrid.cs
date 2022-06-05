@@ -12,17 +12,21 @@ public class GameGrid : MonoBehaviour
     [SerializeField] private GameObject gridCellPrefab;
     [SerializeField] private GameObject boardPrefab;
     [SerializeField] private GameObject wallPrefab;
+    [SerializeField] private GameObject player;
 
     public GameObject[,] gameGrid;
+    public Vector3[,] wallSnapPoints;
+    public List<Vector3> snapPoints = new List<Vector3>();
     private GameObject gameBoard;
     private GameObject[] walls;
-    [SerializeField]private GameObject player;
+    
 
-    void Start()
+    void Awake()
     {
         CreateGrid();
         CreateBoard();
         CreateWalls();
+        WallSnapPoints();
     }
 
     private void CreateGrid()
@@ -77,6 +81,19 @@ public class GameGrid : MonoBehaviour
         {
             walls[i] = Instantiate(wallPrefab, new Vector3(i*1.35f, 0, -3), Quaternion.identity);
             walls[i].GetComponent<Wall>().SetPosition(i*1.35f,-3);
+        }
+    }
+
+    private void WallSnapPoints()
+    {
+        wallSnapPoints = new Vector3[height - 1, widht - 1];
+        for (int z = 0; z < height-1; z++)
+        {
+            for (int x = 0; x < widht-1; x++)
+            {
+                wallSnapPoints[x, z] = new Vector3(x * GridSpaceSize + 0.75f,0.5f, z * GridSpaceSize + 0.75f);
+                snapPoints.Add(new Vector3(x * GridSpaceSize + 0.75f, 0.5f, z * GridSpaceSize + 0.75f));
+            }
         }
     }
 
